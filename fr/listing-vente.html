@@ -1,315 +1,91 @@
 <!DOCTYPE html>
-<html prefix="og: http://ogp.me/ns#" lang="fr">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>ACCES IMMOBILIER - Liste des biens en vente</title>
-    <meta name="site-verification" content="check"/>
+    <title>ACCES IMMOBILIER - Test Design</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="_token" content="4e64Crze5sF1QCwu67VIthpgofFIEy1D6Or2ewd5">
-    <link rel="alternate" type="application/rss+xml" href="feed_rss.xml" />
+    
     <link rel="stylesheet" href="../modele/css/bootstrap.minb1fb.css?1574429566">
-    <link rel="canonical" href="listing-vente.html"/>    
-    <link href="../../use.fontawesome.com/releases/v5.0.10/css/all.css" rel="stylesheet" type="text/css" id="fontawesome-css" />
-    <link href="../css/leaflet-bundle.min9b67.css?1574428957" rel="stylesheet" type="text/css" id="leaflet-css" />
-    <link href="../css/bootstrap-select.min9b67.css?1574428957" rel="stylesheet" type="text/css" id="bootstrap-select-css" />
+    <link href="../../use.fontawesome.com/releases/v5.0.10/css/all.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="../css/premium/mainb001.css?1638779072">
     <link rel="stylesheet" href="../../cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
     <link rel="stylesheet" href="../modele/css/main2f8b.css?1731080346">
-    <link href="../../unpkg.com/aos%402.3.1/dist/aos.css" rel="stylesheet">
-    <link rel="stylesheet" href="../modele/css/ajaxb1fb.css?1574429566">
     <link rel="stylesheet" href="../assets/css/appcffb.css?1718179493">
-    <link rel="shortcut icon" href="../assets/images/favicon/faviconbfd8.ico?1717568386" type="image/x-icon">
-    <link rel="preconnect" href="https://fonts.googleapis.com/">
-    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap" rel="stylesheet">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
 </head>
+
 <body class="listing-vente">
-
-    <div class="modal fade" id="myModal" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div></div>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                </div>
-                <div id="form-recherche-modal-content" class="modal-body"></div>
-            </div>
-        </div>
-    </div>
-
-    <aside id="menu" class="aside_contact" style="transform: translateX(0px);">
-        <div class="contact_contain">
-            <div class="slider-exit text-right hidden-sm-down"><i class="ion-android-close"></i></div>
-            <div class="pres_agency mt-5 mb-5">
-                <figure class="contact_img hidden-sm-down"><img src="../assets/images/logo_index6764.png?1717568206" alt="ACCES IMMOBILIER"></figure>
-            </div>
-            <div class="contact_coordinates ">
-                <address>
-                    <ul>
-                        <li></li><li>27 avenue Pasteur</li><li>11800 Trèbes</li>
-                        <li><div type="button" class="w-100 btn intention_appel" data-tel="04 68 78 53 20" data-agence="0"><i class="ion-ios-telephone-outline"></i><span class="intention_appel_txt">Voir le téléphone</span></div></li>
-                    </ul>   
-                    <div class="group_btn">
-                        <a href="contact.html" class="btn btn-primary"><i class="ion-ios-email-outline"></i> <span>Nous contacter</span></a>
-                        <a href="on-vous-rappelle.html" class="btn btn-info"><i class="ion-ios-telephone-outline"></i> <span>On vous rappelle</span></a>
-                    </div>
-                </address>
-            </div>
-            <div class="aside_map hidden-sm-down"><div class="contact_titre">Nous situer</div><div id="map"><img src="../assets/images/map/aside_map535f.png?1632398862" alt="map"></div></div>
-            <div class="social_network"><ul class="list-inline"><li class="list-inline-item"><a href="https://www.facebook.com/remaxaccesimmobilier/" target="_blank"><i class="ion-social-facebook"></i></a></li><li class="list-inline-item"><a href="https://www.instagram.com/remax_acces_immobilier/" target="_blank"><i class="ion-social-instagram"></i></a></li></ul></div>
-        </div>
-    </aside>
 
     <div class="header text-sm-center">
         <div class="sticky_menu hidden-sm-down">
             <div class="site-container">
                 <div class="site-pusher">
-                    <a href="../fr.html" class="header__icon" id="header__icon"><div class="burger-item"></div></a>
-                    <a href="../fr.html" title="ACCES IMMOBILIER" class="header__logo"><img src="../assets/images/logo4561.jpg?1717568236" class=" img-fluid" alt="ACCES IMMOBILIER" /></a>
+                    <a href="../fr.html" class="header__logo">
+                        <img src="../assets/images/logo4561.jpg?1717568236" class="img-fluid" alt="ACCES IMMOBILIER" />
+                    </a>
                     <div class="container">
                         <nav class="menu">
                             <ul>
                                 <li><a href="../fr.html">Accueil</a></li>
                                 <li class="active"><a href="listing-vente.html">Vente</a></li>
-                                <li><a href="listing-location.html">Location</a></li>
-                                <li><a href="estimation.html">Estimation</a></li>
-                                <li><a href="alerte-email.html">Alerte email</a></li>
-                                <li><a href="agence.html">Agence</a></li>
                                 <li><a href="contact.html">Contact</a></li>
                             </ul>
                         </nav>            
                     </div>
-                    <div class="site-cache" id="site-cache"></div>
                 </div> 
             </div> 
-            <div class="bloc bloc4"><li class="list-inline-item"><a type="button" data-toggle="modal" data-target="#myModal"><i class="ion-ios-search-strong"></i></a></li></div>
-            <div class="lang nav-desktop-lang" style="position:absolute; z-index:20; top:3px; right:3px;">
-                <a href="../fr.html" style="display:inline-block;"><img src="../assets/images/flag-fr.jpg" alt="" /></a>
-                <a href="../en.html" style="display:inline-block;"><img src="../assets/images/flag-en-active.jpg" alt="ACCES IMMOBILIER" /></a>
-            </div>
-            
-            <div class="container_search">
-                <form action='listing.html' method='get' name='form_rech' id="formrecherchevente" class="formSearch">
-                    <div class="container pb20">
-                        <div class="search_form d-flex flex-wrap">      
-                             <div class="form-group search__form-item c_type"><div class="champs"><select class="selectpicker" multiple name="type[]" id="type" data-style='btn-cms' data-size='5' data-actions-box='true' data-none-selected-text='Type de bien'><option value="maison">Maison</option><option value="appartement">Appartement</option></select></div></div>
-                             <div class="form-group search__form-item c_insee"><div class="champs"><select class="selectpicker" multiple name="insee[]" id="insee" data-style='btn-cms' data-size='5' data-actions-box='true' data-none-selected-text='Ville'><option value="11069">Carcassonne</option><option value="11397">Trebes</option></select></div></div>
-                             <div class="form-group search__form-item c_prixmax"><div class="champs"><input class="form-style" type="int" name="prixmax" id="prixmax" placeholder="Budget max" /><span class="input-group-addon bs-caret">&euro;</span></div></div>
-                             <div class="search__form-item c_valid"><input class="btn btn-primary w-100" type="submit" name="btnSubmit" value="Rechercher"></div>
-                        </div>
-                    </div>
-                </form>
-            </div>
         </div>
     </div>
 
     <div id="content" class="main-content">
         <div class="container">
-            <div id="formrecherchevente-bar" class="fiche_produit">
-                <div class="action_bar mb-3 mt-3">
-                    <div class="breadcrumb-cms"><div class="breadcrumb-item"><a href="../fr.html">Accueil</a></div><div class="breadcrumb-item active">Liste des biens en vente</div></div>
-                    <div class="d-flex">
-                        <div class="block_tri_list d-flex mr-2">
-                            <label>Trier par ...</label>
-                            <select id="select_tri" class="selectpicker" data-style='btn-cms'>
-                                <option value="date1-desc" selected="selected">Date décroissante</option>
-                                <option value="prix-asc">Prix croissant</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>  
-            </div>
+            <div class="action_bar mb-3 mt-3">
+                <div class="breadcrumb-cms">
+                    <div class="breadcrumb-item">Accueil</div>
+                    <div class="breadcrumb-item active">Test Design</div>
+                </div>
+            </div>  
         </div>
-
-        <div class="display-4"></div>
 
         <div class="container prod_listing" id="listing-vente">
             
-            <div id="loading-message" class="text-center" style="width:100%; padding:50px;">
-                <i class="fa fa-spinner fa-spin fa-3x"></i><br>
-                <span style="font-size:18px; color:#d7b877;">Connexion à l'agence en cours...</span>
-            </div>
-
-            <div id="template-annonce" style="display:none;">
-                <div class="listing_article clearfix">
-                    <div class="article_content">
-                        <article class="item-listing">
-                            <a href="#" class="item-link lien-detail"></a>
-                            
-                            <div class="block_img">
-                                <div class="bandeaux">
-                                    <div class="block_etiquette b_exclu etiquette-exclu" style="display:none;">Exclusivité</div>
+            <div class="listing_article clearfix">
+                <div class="article_content">
+                    <article class="item-listing">
+                        <div class="block_img">
+                            <img class="d-block img-fluid" src="../assets/images/sans-photo.jpg" alt="Test" style="width:100%">
+                        </div>
+                        <div class="block_info">
+                            <div class="effect-cms">
+                                <div class="header-item">
+                                    <div class="spin1 info_type">Maison Test</div>
+                                    <span class="spin2 info_titre">Si tu vois ça, le design marche</span>
+                                    <div class="spin3 info_ville">VILLE TEST</div>
                                 </div>
-                                <div class="carousel slide">
-                                    <div class="carousel-inner">
-                                        <div class="carousel-item active">
-                                            <img class="d-block img-fluid photo-principale" src="" alt="Photo" style="width:100%; min-height:250px; object-fit:cover;">
-                                        </div>
-                                    </div>
-                                </div>
+                                <div class="spin4 info_prix">100 000 €</div>
                             </div>
-
-                            <div class="block_info">
-                                <div class="effect-cms">
-                                    <div class="card-fav-absolute"><i class="tea ion-ios-heart adfav"></i></div>
-
-                                    <div class="header-item">
-                                        <div class="spin1 info_type">Maison</div>
-                                        <span class="spin2 info_titre">Titre</span>
-                                        <div class="spin3 info_ville"><i class="tea ion-ios-location-outline"></i> <span>VILLE</span></div>
-                                    </div>
-
-                                    <div class="box"><div class="line"><div class="triangle"></div></div></div>
-
-                                    <div class="spin4 info_prix">0 €</div>
-
-                                    <ul class="card_list hidden-sm-down">
-                                        <li><span class="val info_pieces">-</span> Pièces</li>
-                                        <li><span class="val info_chambres">-</span> Chambres</li>
-                                        <li><span class="val info_surface">-</span> m²</li>
-                                    </ul>
-
-                                    <div class="infos-flex">
-                                        <div class="col1">
-                                            <div class="description info_desc">Description...</div>
-                                        </div>
-                                        <div class="col2">
-                                            <ul><li><div>Surface</div><div class="info_surface_detail">- m²</div></li></ul>
-                                            <ul><li><div>Ref</div><div class="info_ref">-</div></li></ul>
-                                        </div>
-                                    </div>
-
-                                    <div class="card_foot hidden-sm-down">
-                                        <div class="d-flex justify-content-between">
-                                            <div class="spin5 info_ref_bas align-text-bottom">Réf. -</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </article>
-                    </div>
+                        </div>
+                    </article>
                 </div>
             </div>
-            <div id="resultats-dynamiques"></div>      
-            
-            <div class="listing_pagination container mt-2"></div>
+
         </div>
     </div>
 
-    <div class="cont_coordonnees">
+    <footer>
         <div class="container">
-            <div class="coordonnees_heading col-md-12"><figure><a href="../fr.html"><img src="../assets/images/logo_index.jpg" alt="ACCES IMMOBILIER" class="img-fluid"></a></figure></div>
-            <div class="row">
-                <div class="address col-xs-12 col-md-4">
-                    <p> 27 avenue Pasteur 11800 Trèbes </p>
-                    <a href="tel:04 68 78 53 20"><div type="button" class="btn intention_appel"><i class="ion-ios-telephone-outline"></i><span class="intention_appel_txt">Voir le téléphone</span></div></a>
+            <div class="row align-items-center">
+                <div class="col-xs-12 text-center">
+                    <p style="color:white; padding: 20px;">Pied de page de test</p>
                 </div>
-                <div class="tel col-xs-12 col-md-4">
-                     <div class="social"><p>Nous suivre :</p><ul class="list-inline"><li class="list-inline-item"><a href="#" target="_blank"><i class="ion-social-facebook"></i></a></li></ul></div>
-                </div>
-                <div class="tel col-xs-12 col-md-4"><a href="contact.html" class="mt-4 btn btn-primary hidden-sm-down" >Nous contacter</a></div>
             </div>
         </div>
-    </div>
-    
-    <footer><div class="container"><div class="row align-items-center"><div class="col-xs-12 col-sm-6 liens_left my-auto"><a href="mentions-legales.html" class="btn btn-footer">Mentions légales</a></div></div></div></footer>
+    </footer>
 
-    <div id="bloc_fixed" class="d-flex flex-column"><div class="bloc bloc1" id="toggle-menu"><ul class="list-inline"><li class="list-inline-item" ><i class="ion-ios-email-outline"></i></li></ul></div></div>
-
-    <script src="../modele/js/cookieconsent.minb1fb.js?1574429566" type="text/javascript"></script>
-    <script src="../modele/js/jquery-3.2.1.minb1fb.js?1574429566" type="text/javascript"></script>
-    <script src="../../code.jquery.com/ui/1.12.0-rc.2/jquery-ui.js"></script>
-    <script src="../modele/js/popper.minc75d.js?1646733235" type="text/javascript"></script>
-    <script src="../modele/js/bootstrap.minb1fb.js?1574429566" type="text/javascript"></script>
-    <script src="../../unpkg.com/aos%402.3.1/dist/aos.js"></script>
-    <script>AOS.init();</script>
-    <script src="../modele/js/mainf1ab.js?1716457065" type="text/javascript"></script>
-
-    <script>
-    $(document).ready(function() {
-        // --- CONFIGURATION ---
-        // 1. Ton lien API (Celui qui marche)
-        const apiTarget = "https://apim.skysignage.com/WCF/connector/d12a2a90-f1f7-59b0-a8ca-247e2907debf/78ecd32d-d37c-5628-8ab1-70a2792afb18?subscription-key=3a826b2799bd491aae7814f41351a46a";
-        
-        // 2. Le "Passe-Partout" (Proxy) pour contourner le blocage rouge du navigateur
-        const proxy = "https://api.allorigins.win/raw?url=" + encodeURIComponent(apiTarget);
-
-        console.log("Tentative de connexion...");
-
-        $.getJSON(proxy, function(response) {
-            console.log("Réponse reçue !");
-            
-            // On s'assure d'avoir la liste (parfois dans data, parfois direct)
-            let biens = response.data || response;
-
-            if (biens && biens.length > 0) {
-                $('#loading-message').hide(); // Cacher le chargement
-
-                // Boucle sur chaque maison
-                $.each(biens, function(i, bien) {
-                    
-                    // Fonction de lecture sécurisée
-                    function get(champ) {
-                        if (Array.isArray(bien)) { // Si format complexe Skysignage
-                            let found = bien.find(x => x.std_name === champ);
-                            return found ? found.value : "";
-                        }
-                        return bien[champ] || ""; // Si format simple
-                    }
-
-                    // FILTRE : VENTE SEULEMENT (Category 0)
-                    if (get("category") !== "0") return;
-
-                    // Clonage du design
-                    let html = $('#template-annonce').children().clone();
-
-                    // Remplissage ID
-                    let id = get("id");
-                    html.find('.lien-detail').attr('href', 'detail.html?id=' + id);
-
-                    // Remplissage Image
-                    let pics = get("pictures");
-                    let imgUrl = '../assets/images/sans-photo.jpg';
-                    if (Array.isArray(pics) && pics.length > 0) imgUrl = pics[0];
-                    else if (typeof pics === 'string' && pics.length > 5) imgUrl = pics;
-                    html.find('.photo-principale').attr('src', imgUrl);
-
-                    // Remplissage Textes
-                    html.find('.info_type').text(get("type_name") || "Bien");
-                    html.find('.info_titre').text(get("title"));
-                    html.find('.info_ville span').text(get("city"));
-                    
-                    // Prix
-                    let p = get("price_format");
-                    if (p && !p.includes('€')) p += " €";
-                    html.find('.info_prix').html(p + ' <sup class="prixplus">*</sup>');
-
-                    // Details
-                    html.find('.info_pieces').text(get("rooms") || "-");
-                    html.find('.info_chambres').text(get("bedrooms") || "-");
-                    let surf = get("area_size");
-                    html.find('.info_surface').text(surf || "-");
-                    html.find('.info_surface_detail').text((surf || "-") + " m²");
-
-                    let ref = get("reference");
-                    html.find('.info_ref').text(ref);
-                    html.find('.info_ref_bas').text("Réf. " + ref);
-
-                    let desc = get("description");
-                    if (desc) html.find('.info_desc').text(desc.substring(0, 150) + "...");
-
-                    // Ajouter dans la page
-                    $('#resultats-dynamiques').append(html);
-                });
-            } else {
-                $('#loading-message').html("Aucun bien trouvé pour le moment.");
-            }
-        }).fail(function(jqXHR, textStatus, errorThrown) {
-            console.error("Erreur:", textStatus, errorThrown);
-            $('#loading-message').html("<span style='color:red'>Erreur de sécurité ou de connexion.<br>Vérifiez que vous ouvrez bien le site via le lien GitHub.</span>");
-        });
-    });
-    </script>
+    <script src="../modele/js/jquery-3.2.1.minb1fb.js?1574429566"></script>
+    <script src="../modele/js/bootstrap.minb1fb.js?1574429566"></script>
+    <script src="../modele/js/mainf1ab.js?1716457065"></script>
 
 </body>
 </html>
