@@ -34,8 +34,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div id="form-recherche-modal-content" class="modal-body">
-                </div>
+                <div id="form-recherche-modal-content" class="modal-body"></div>
             </div>
         </div>
     </div>
@@ -111,9 +110,9 @@
 
     <div class="container_search">
         <div class="container pb20">
-            <div class="search_form d-flex flex-wrap justify-content-center">      
+             <div class="search_form d-flex flex-wrap justify-content-center">      
                 <div class="search__form-item c_valid" title="Recherche par critères">
-                    <input class="btn btn-primary w-100" type="button" value="Actualiser les biens" onclick="window.location.reload()">
+                    <input class="btn btn-primary w-100" type="button" value="Actualiser la liste" onclick="window.location.reload()">
                 </div>
             </div>
         </div>
@@ -125,7 +124,7 @@
                 <div class="action_bar mb-3 mt-3">
                     <div class="breadcrumb-cms">
                         <div class="breadcrumb-item"><a href="../fr.html">Accueil</a></div>
-                        <div class="breadcrumb-item active">Liste des biens</div>
+                        <div class="breadcrumb-item active">Liste des biens en vente</div>
                     </div>
                     
                     <div class="d-flex">
@@ -149,7 +148,7 @@
                 
                 <div class="article_content" id="inject-listings-here">
                     <div style="text-align:center; padding:50px;">
-                        <i class="fa fa-spinner fa-spin" style="font-size:40px; color:#d4af37;"></i>
+                        <i class="fas fa-spinner fa-spin" style="font-size:40px; color:#cfa156;"></i>
                         <p>Chargement des biens...</p>
                     </div>
                 </div>
@@ -159,7 +158,7 @@
                     </div>
                     <div id="maplisting">
                         <div id="mapliste" style="height:700px; width:100%;">
-                            <img src="../assets/images/map/aside_map535f.png" alt="map" style="width:100%; height:100%; object-fit:cover;">
+                             <img src="../assets/images/map/aside_map535f.png" alt="map" style="width:100%; height:100%; object-fit:cover;">
                         </div>
                     </div>
                 </div>
@@ -179,6 +178,15 @@
                     <p>27 avenue Pasteur 11800 Trèbes</p>
                     <a href="tel:04 68 78 53 20" style="color:white;">04 68 78 53 20</a>
                     <p><a style="color:#ffffff" href="mailto:contact@acces-immobilier.com">contact@acces-immobilier.com</a></p>
+                </div>
+                 <div class="tel col-xs-12 col-md-4">
+                    <div class="social">
+                        <p>Nous suivre sur les réseaux sociaux :</p>
+                        <ul class="list-inline">
+                            <li class="list-inline-item"><a href="#" target="_blank"><i class="ion-social-facebook"></i></a></li>
+                            <li class="list-inline-item"><a href="#" target="_blank"><i class="ion-social-instagram"></i></a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -211,50 +219,47 @@
         const apiUrl = "https://apim.skysignage.com/WCF/connector/d12a2a90-f1f7-59b0-a8ca-247e2907debf/78ecd32d-d37c-5628-8ab1-70a2792afb18?subscription-key=3a826b2799bd491aae7814f41351a46a";
         const container = document.getElementById('inject-listings-here');
 
-        // --- FONCTION DE DECODAGE SPECIFIQUE A TON API ---
-        // Ton API renvoie un tableau d'objets {std_name: "nom", value: "valeur"}
-        // Cette fonction cherche la bonne valeur.
+        // 1. Fonction pour extraire la valeur depuis la structure complexe de ton API
+        // L'API renvoie une liste de champs du type {std_name: "nom", value: "valeur"}
         const getVal = (fields, name) => {
             if (!Array.isArray(fields)) return null;
             const field = fields.find(item => item.std_name === name);
             return field ? field.value : null;
         };
 
+        // 2. Fonction pour formater le prix (ex: 100000 -> 100 000 €)
         const formatPrice = (price) => {
             if(!price) return 'Nous consulter';
             return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(price);
         };
 
+        // 3. Appel de l'API
         fetch(apiUrl)
-        .then(response => {
-            if (!response.ok) { throw new Error('Erreur réseau'); }
-            return response.json();
-        })
+        .then(response => response.json())
         .then(data => {
-            console.log("Données reçues de l'API (Structure corrigée) :", data); 
+            console.log("Données reçues de l'API :", data); // Pour vérifier dans la console
 
-            // Si l'API retourne directement un tableau, on l'utilise
-            // Avec ton API, 'data' est normalement directement le tableau de tableaux
+            // L'API renvoie un tableau de tableaux (chaque sous-tableau est une maison)
             const listings = Array.isArray(data) ? data : [];
 
             if (listings.length === 0) {
-                container.innerHTML = '<p class="text-center">Aucun bien disponible pour le moment.</p>';
+                container.innerHTML = '<div class="alert alert-warning text-center">Aucun bien disponible pour le moment.</div>';
                 return;
             }
 
             let htmlContent = '';
 
             listings.forEach((bienFields, index) => {
-                // --- EXTRACTION DES DONNÉES VIA LA FONCTION getVal ---
+                // --- Récupération des infos avec getVal ---
                 const idBien = getVal(bienFields, 'reference') || index;
                 const titre = getVal(bienFields, 'title') || 'Bien immobilier';
                 
-                // Traduction type de transaction (For sale / For rent)
+                // Gestion type (Vente/Location)
                 let categoryRaw = getVal(bienFields, 'category_txt');
                 let typeTransaction = "Vente";
-                if(categoryRaw === "For rent") typeTransaction = "Location";
-                else if(categoryRaw === "For sale") typeTransaction = "Vente";
-
+                if(categoryRaw && categoryRaw.toLowerCase().includes('rent')) typeTransaction = "Location";
+                
+                // Infos de base
                 const ville = getVal(bienFields, 'city') || '';
                 const cp = getVal(bienFields, 'postal_code') || '';
                 const prix = getVal(bienFields, 'price') || 0;
@@ -262,35 +267,33 @@
                 // Surfaces et pièces
                 const surface = getVal(bienFields, 'area_size') || 0;
                 const terrain = getVal(bienFields, 'area_lot_size') || 0;
-                // Ton API utilise 'bedrooms' (chambres), on estime les pièces souvent = chambres + 1 (salon)
-                // Ou on affiche juste les chambres si 'pieces' n'existe pas.
                 const chambres = getVal(bienFields, 'bedrooms') || 0;
-                // On affiche les chambres comme "pièces" car l'info "pièces totales" semble absente ou calculée
-                const pieces = chambres > 0 ? chambres + 1 : 1; 
+                // Si pas de "rooms", on estime que pieces = chambres + 1
+                const pieces = chambres > 0 ? chambres + 1 : '-'; 
 
                 const description = getVal(bienFields, 'description') || '';
                 const photos = getVal(bienFields, 'pictures') || []; 
                 const isExclusif = getVal(bienFields, 'exclusive') === true;
                 // -------------------------------------
 
-                // Gestion des photos pour le carousel
+                // Construction du carrousel d'images (HTML Bootstrap)
                 let imagesHtml = '';
                 if(photos && photos.length > 0) {
                     photos.forEach((imgUrl, idx) => {
                         const activeClass = idx === 0 ? 'active' : '';
                         imagesHtml += `
                             <div class="carousel-item ${activeClass}">
-                                <img class="d-block img-fluid" src="${imgUrl}" alt="${titre}" style="width:100%; height:300px; object-fit:cover;">
+                                <img class="d-block img-fluid" src="${imgUrl}" alt="${titre}" style="width:100%; height:340px; object-fit:cover;">
                             </div>`;
                     });
                 } else {
-                    imagesHtml = `<div class="carousel-item active"><img class="d-block img-fluid" src="https://via.placeholder.com/450x300?text=Pas+de+photo" alt="Sans photo"></div>`;
+                    imagesHtml = `<div class="carousel-item active"><img class="d-block img-fluid" src="https://via.placeholder.com/450x340?text=Pas+de+photo" alt="Sans photo"></div>`;
                 }
 
-                // Génération du HTML
+                // --- CONSTRUCTION DU BLOC HTML (Identique à ton ancien code) ---
                 htmlContent += `
                 <article id="art_${idBien}" class="item-listing" style="margin-bottom: 30px;">
-                    <a href="detail.html?ref=${idBien}" title="Plus de détails" class="item-link"></a>
+                    <a href="detail-bien.html?ref=${idBien}" title="Plus de détails" class="item-link"></a>
                     
                     <div class="block_img">
                         <div class="bandeaux">
@@ -318,12 +321,12 @@
                             <div class="card-fav-absolute"><i class="tea ion-ios-heart adfav"></i></div>
 
                             <div class="header-item">
-                                <a href="detail.html?ref=${idBien}" title="Plus de détails">
-                                    <div class="spin1 info_type">${typeTransaction}</div>
+                                <a href="detail-bien.html?ref=${idBien}" title="Plus de détails">
+                                    <div class="spin1 info_type">${typeTransaction} Maison/Appart</div>
                                     <span class="spin2 info_titre">${titre}</span>
                                     <div class="spin3 info_ville">
                                         <i class="tea ion-ios-location-outline"></i>
-                                        ${ville} ${cp}
+                                        ${ville} (${cp})
                                     </div>
                                 </a>
                             </div>
@@ -334,14 +337,14 @@
                             
                             <div class="spin4 info_prix">${formatPrice(prix)} <sup class="prixplus">*</sup>
                                 <div class="info_prix-hai">
-                                    * Honoraires charge vendeur / bailleur
+                                    * Honoraires inclus
                                 </div>
                             </div>
 
                             <ul class="card_list hidden-sm-down">
                                 <li><span class="val">${pieces}</span> Pièces</li>
                                 <li><span class="val">${chambres}</span> Chambres</li>
-                                <li><span class="val">${surface}</span> m<sup>2</sup></li>
+                                <li><span class="val">${Math.round(surface)}</span> m<sup>2</sup></li>
                             </ul>
 
                             <div class="infos-flex">
@@ -351,8 +354,8 @@
                                     </div>
                                 </div>
                                 <div class="col2">
-                                    <ul><li><div>Surface</div><div>${surface} m<sup>2</sup></div></li></ul>
-                                    ${terrain > 0 ? `<ul><li><div>Terrain</div><div>${terrain} m<sup>2</sup></div></li></ul>` : ''}
+                                    <ul><li><div>Surface</div><div>${Math.round(surface)} m<sup>2</sup></div></li></ul>
+                                    ${terrain > 0 ? `<ul><li><div>Terrain</div><div>${Math.round(terrain)} m<sup>2</sup></div></li></ul>` : ''}
                                     <ul><li><div>Chambres</div><div>${chambres}</div></li></ul>
                                 </div>
                             </div>
@@ -367,16 +370,19 @@
                 </article>`;
             });
 
+            // Injection du HTML final
             container.innerHTML = htmlContent;
 
-            // Relancer les composants Bootstrap
-            $('.carousel').carousel();
-            $('.selectpicker').selectpicker('refresh');
+            // Important : On doit "rafraîchir" les composants Bootstrap (Carousel, Select) car ils ont été ajoutés après le chargement de la page
+            try {
+                $('.carousel').carousel();
+                $('.selectpicker').selectpicker('refresh');
+            } catch(e) { console.log('Bootstrap re-init skipped'); }
 
         })
         .catch(error => {
             console.error('Erreur API:', error);
-            container.innerHTML = '<div class="alert alert-danger">Impossible de récupérer les annonces. Vérifiez la connexion.</div>';
+            container.innerHTML = '<div class="alert alert-danger">Problème de connexion avec les annonces.</div>';
         });
     });
     </script>
