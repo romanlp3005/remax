@@ -1214,79 +1214,83 @@ var map_enlever = "Enlever ";
 		<script src="../js/bootstrap-select/bootstrap-select.min7023.js?1646733142" type="text/javascript" id="bootstrap-select-js"></script>
 		<script src="../js/bootstrap-select/defaults-fr_FR.min3476.js?1574428958" type="text/javascript" id="bootstrap-select-i18n-js"></script>
 
+<!--a compacter-->
+<script>
+    $(document).ready(function() {
+        var my_cookie = Cookies.get($('.modal-check').attr('name'));
+        if (my_cookie && my_cookie == "true") {
+            $(this).prop('checked', my_cookie);
+        } else {
+            $('#myModal2').modal('show');
+        }
+        $(".modal-check").change(function() {
+            Cookies($(this).attr("name"), $(this).prop('checked'), {
+                path: '/',
+                expires: 1
+            });
+        });
+    });
+</script>
+<script src="../modele/js/sticky-headerc880.js?1733391971" type="text/javascript"></script>
+<script src="../modele/js/mainf1ab.js?1716457065" type="text/javascript"></script>
+    <script src="../js/premium/common5613.js?1730887060" type="text/javascript"></script>
+    <script src="../assets/js/appbc03.js?1638365383" type="text/javascript"></script>
+ 
+
+
+        
+
+    <script src="../../kit.fontawesome.com/2ed742e839.html" crossorigin="anonymous"></script>
+
+
 <script>
 $(document).ready(function() {
-    // 1. Ton API SkySignage
-    const apiOriginale = "https://apim.skysignage.com/WCF/connector/d12a2a90-f1f7-59b0-a8ca-247e2907debf/78ecd32d-d37c-5628-8ab1-70a2792afb18?subscription-key=3a826b2799bd491aae7814f41351a46a";
-    
-    // 2. Le Proxy (Le passe-droit pour contourner l'erreur de connexion rouge)
-    const urlAvecProxy = "https://api.allorigins.win/raw?url=" + encodeURIComponent(apiOriginale);
+    // TON API EXACTE
+    const apiUrl = "https://apim.skysignage.com/WCF/connector/d12a2a90-f1f7-59b0-a8ca-247e2907debf/78ecd32d-d37c-5628-8ab1-70a2792afb18?subscription-key=3a826b2799bd491aae7814f41351a46a";
 
-    $.getJSON(urlAvecProxy, function(response) {
-        // On vérifie où sont les données (parfois directement, parfois dans .data)
-        let donnees = response.data || response; 
+    $.getJSON(apiUrl, function(response) {
+        if (response.success && response.data) {
+            $('#loading-message').hide(); // On cache le chargement
 
-        if (donnees) {
-            $('#loading-message').hide(); // On cache le message de chargement
-
-            $.each(donnees, function(index, annonceData) {
-                // Petite fonction pour lire les valeurs facilement
+            $.each(response.data, function(index, annonceData) {
+                
+                // Fonction pour lire les données de ton API
                 function getVal(champ) { 
-                    if (Array.isArray(annonceData)) {
-                        let item = annonceData.find(x => x.std_name === champ);
-                        return item ? item.value : "";
-                    }
-                    return annonceData[champ] || "";
+                    let item = annonceData.find(x => x.std_name === champ);
+                    return item ? item.value : ""; 
                 }
 
-                // --- FILTRE : ON GARDE UNIQUEMENT LES VENTES ---
-                // Si la catégorie n'est pas "0" (Vente), on ignore
+                // FILTRE : On affiche UNIQUEMENT les Ventes (category "0")
+                // Si ce n'est pas une vente, on passe au suivant
                 if (getVal("category") !== "0") return;
 
-                // On prépare le moule
+                // On clone le moule
                 let template = $('#template-annonce').children().clone();
                 
-                // On remplit avec les infos de l'API
+                // On remplit les infos
                 let id = getVal("id");
                 let photos = getVal("pictures");
-                let photoUrl = '../assets/images/sans-photo.jpg';
-                
-                // Gestion des photos (si c'est un tableau ou une chaine)
-                if (Array.isArray(photos) && photos.length > 0) photoUrl = photos[0];
-                else if (typeof photos === 'string' && photos.length > 5) photoUrl = photos;
+                let photoUrl = (photos && photos.length > 0) ? photos[0] : '../assets/images/sans-photo.jpg';
 
-                // Remplissage des champs HTML
                 template.find('.lien-detail').attr('href', 'detail.html?id=' + id);
                 template.find('.photo-principale').attr('src', photoUrl);
-                template.find('.info_type').text(getVal("type_name") || "Maison");
-                template.find('.info_titre').text(getVal("title") || "Bien à vendre");
+                template.find('.info_type').text(getVal("type_name") || "Maison"); // Type de bien
+                template.find('.info_titre').text(getVal("title"));
                 template.find('.info_ville span').text(getVal("city"));
-                
-                // Prix (Ajout du € si manquant)
-                let prix = getVal("price_format");
-                if (prix && !prix.includes('€')) prix += ' €';
-                template.find('.info_prix').text(prix);
-
-                // Infos complémentaires
-                template.find('.info_pieces').text(getVal("rooms") || getVal("bedrooms") || "-");
+                template.find('.info_prix').text(getVal("price_format"));
+                template.find('.info_pieces').text(getVal("rooms") || "-");
                 template.find('.info_surface').text(getVal("area_size") || "-");
-                
-                let desc = getVal("description");
-                if(desc) template.find('.info_desc').text(desc.substring(0, 120) + "...");
-                
+                template.find('.info_desc').text(getVal("description").substring(0, 150) + "..."); // Description courte
                 template.find('.info_ref').text("Réf. " + getVal("reference"));
 
-                // Affichage final
+                // On ajoute l'annonce remplie dans la page
                 $('#resultats-dynamiques').append(template);
             });
-            
-            // Si aucune vente trouvée
-            if ($('#resultats-dynamiques').children().length === 0) {
-                $('#loading-message').show().html("Aucune annonce trouvée avec ces critères.");
-            }
+        } else {
+             $('#loading-message').html("Aucune connexion aux annonces.");
         }
     }).fail(function() {
-        $('#loading-message').html('<p style="color:red">Erreur technique : Le serveur API ne répond pas via le proxy.</p>');
+        console.log("Erreur API - Vérifier si en ligne"); 
     });
 });
 </script>
