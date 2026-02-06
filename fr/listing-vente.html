@@ -1,91 +1,369 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html prefix="og: http://ogp.me/ns#" lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>ACCES IMMOBILIER - Test Design</title>
+    <title>ACCES IMMOBILIER - Liste des biens en vente</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
     <link rel="stylesheet" href="../modele/css/bootstrap.minb1fb.css?1574429566">
-    <link href="../../use.fontawesome.com/releases/v5.0.10/css/all.css" rel="stylesheet" type="text/css" />
+    <link href="../../use.fontawesome.com/releases/v5.0.10/css/all.css" rel="stylesheet" type="text/css" id="fontawesome-css" />
+    <link href="../css/leaflet-bundle.min9b67.css?1574428957" rel="stylesheet" type="text/css" id="leaflet-css" />
+    <link href="../css/bootstrap-select.min9b67.css?1574428957" rel="stylesheet" type="text/css" id="bootstrap-select-css" />
     <link rel="stylesheet" href="../css/premium/mainb001.css?1638779072">
     <link rel="stylesheet" href="../../cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
     <link rel="stylesheet" href="../modele/css/main2f8b.css?1731080346">
+    <link href="../../unpkg.com/aos%402.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="../modele/css/ajaxb1fb.css?1574429566">
     <link rel="stylesheet" href="../assets/css/appcffb.css?1718179493">
     
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" href="../assets/images/favicon/faviconbfd8.ico?1717568386" type="image/x-icon">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com/">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap" rel="stylesheet">
 </head>
 
 <body class="listing-vente">
+
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div></div>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div id="form-recherche-modal-content" class="modal-body">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <aside id="menu" class="aside_contact" style="transform: translateX(0px);">
+        <div class="contact_contain">
+            <div class="slider-exit text-right hidden-sm-down">
+                <i class="ion-android-close"></i>
+            </div>
+            <div class="pres_agency mt-5 mb-5">
+                <figure class="contact_img hidden-sm-down">
+                    <img src="../assets/images/logo_index6764.png?1717568206" alt="ACCES IMMOBILIER">
+                </figure>
+            </div>
+            <div class="contact_coordinates ">
+                <address>
+                    <ul>
+                        <li></li>
+                        <li>27 avenue Pasteur</li>
+                        <li>11800 Trèbes</li>
+                        <li>
+                            <div type="button" class="w-100 btn intention_appel">
+                                <i class="ion-ios-telephone-outline"></i>
+                                <span class="intention_appel_txt">04 68 78 53 20</span>
+                            </div>
+                        </li>
+                    </ul>   
+                    <div class="group_btn">
+                        <a href="contact.html" class="btn btn-primary" title=""><i class="ion-ios-email-outline"></i> <span>Nous contacter</span></a>
+                    </div>
+                </address>
+            </div>
+        </div>
+    </aside>
 
     <div class="header text-sm-center">
         <div class="sticky_menu hidden-sm-down">
             <div class="site-container">
                 <div class="site-pusher">
-                    <a href="../fr.html" class="header__logo">
-                        <img src="../assets/images/logo4561.jpg?1717568236" class="img-fluid" alt="ACCES IMMOBILIER" />
+                    <a href="../fr.html" class="header__icon" id="header__icon"><div class="burger-item"></div></a>
+                    <a href="../fr.html" title="ACCES IMMOBILIER" class="header__logo">
+                        <img src="../assets/images/logo4561.jpg?1717568236" class=" img-fluid" alt="ACCES IMMOBILIER" />
                     </a>
                     <div class="container">
                         <nav class="menu">
                             <ul>
                                 <li><a href="../fr.html">Accueil</a></li>
                                 <li class="active"><a href="listing-vente.html">Vente</a></li>
+                                <li><a href="listing-location.html">Location</a></li>
+                                <li><a href="estimation.html">Estimation</a></li>
+                                <li><a href="alerte-email.html">Alerte email</a></li>
+                                <li><a href="agence.html">Agence</a></li>
                                 <li><a href="contact.html">Contact</a></li>
                             </ul>
                         </nav>            
                     </div>
+                    <div class="site-cache" id="site-cache"></div>
                 </div> 
             </div> 
+
+            <div class="bloc bloc4">
+                <li class="list-inline-item">
+                    <a type="button" class="" data-toggle="modal" data-target="#myModal"><i class="ion-ios-search-strong"></i></a>
+                </li>
+            </div>
+
+            <div class="lang nav-desktop-lang" style="position:absolute; z-index:20; top:3px; right:3px;">
+                <a href="../fr.html" style="display:inline-block;"><img src="../assets/images/flag-fr.jpg" alt="" /></a>
+                <a href="../en.html" style="display:inline-block;"><img src="../assets/images/flag-en-active.jpg" alt="" /></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container_search">
+        <div class="container pb20">
+            <div class="search_form d-flex flex-wrap justify-content-center">      
+                <div class="search__form-item c_valid" title="Recherche par critères">
+                    <input class="btn btn-primary w-100" type="button" value="Rechercher" onclick="window.location.reload()">
+                </div>
+            </div>
         </div>
     </div>
 
     <div id="content" class="main-content">
         <div class="container">
-            <div class="action_bar mb-3 mt-3">
-                <div class="breadcrumb-cms">
-                    <div class="breadcrumb-item">Accueil</div>
-                    <div class="breadcrumb-item active">Test Design</div>
-                </div>
-            </div>  
+            <div id="formrecherchevente-bar" class="fiche_produit">
+                <div class="action_bar mb-3 mt-3">
+                    <div class="breadcrumb-cms">
+                        <div class="breadcrumb-item"><a href="../fr.html">Accueil</a></div>
+                        <div class="breadcrumb-item active">Liste des biens en vente</div>
+                    </div>
+                    
+                    <div class="d-flex">
+                        <div class="block_tri_list d-flex mr-2">
+                            <label>Trier par ...</label>
+                            <select id="select_tri" class="selectpicker" data-style='btn-cms'>
+                                <option value="date1-desc" selected="selected">Nouveautés</option>
+                                <option value="prix-asc">Prix croissant</option>
+                                <option value="prix-desc">Prix décroissant</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>  
+            </div>
         </div>
 
+        <div class="display-4"></div>
+
         <div class="container prod_listing" id="listing-vente">
-            
             <div class="listing_article clearfix">
-                <div class="article_content">
-                    <article class="item-listing">
-                        <div class="block_img">
-                            <img class="d-block img-fluid" src="../assets/images/sans-photo.jpg" alt="Test" style="width:100%">
+                
+                <div class="article_content" id="inject-listings-here">
+                    <div style="text-align:center; padding:50px;">
+                        <i class="fa fa-spinner fa-spin" style="font-size:40px; color:#d4af37;"></i>
+                        <p>Chargement des biens...</p>
+                    </div>
+                </div>
+                <div class="module_recherche_carte">
+                    <div class="tool_boox_map">
+                        <span class="icone_write"><i class="ion-edit"></i></span> Dessiner votre zone de recherche
+                    </div>
+                    <div id="maplisting">
+                        <div id="mapliste" style="height:700px; width:100%;">
+                            <img src="../assets/images/map/aside_map535f.png" alt="map" style="width:100%; height:100%; object-fit:cover;">
                         </div>
-                        <div class="block_info">
-                            <div class="effect-cms">
-                                <div class="header-item">
-                                    <div class="spin1 info_type">Maison Test</div>
-                                    <span class="spin2 info_titre">Si tu vois ça, le design marche</span>
-                                    <div class="spin3 info_ville">VILLE TEST</div>
-                                </div>
-                                <div class="spin4 info_prix">100 000 €</div>
-                            </div>
-                        </div>
-                    </article>
+                    </div>
                 </div>
             </div>
+        </div>
+    </div>
 
+    <div class="cont_coordonnees">
+        <div class="container">
+            <div class="coordonnees_heading col-md-12">
+                <figure>
+                    <a href="../fr.html"><img src="../assets/images/logo_index.jpg" alt="ACCES IMMOBILIER" class="img-fluid"></a>
+                </figure>
+            </div>
+            <div class="row">
+                <div class="address col-xs-12 col-md-4">
+                    <p>27 avenue Pasteur 11800 Trèbes</p>
+                    <a href="tel:04 68 78 53 20" style="color:white;">04 68 78 53 20</a>
+                    <p><a style="color:#ffffff" href="mailto:contact@acces-immobilier.com">contact@acces-immobilier.com</a></p>
+                </div>
+            </div>
         </div>
     </div>
 
     <footer>
         <div class="container">
             <div class="row align-items-center">
-                <div class="col-xs-12 text-center">
-                    <p style="color:white; padding: 20px;">Pied de page de test</p>
+                <div class="col-xs-12 col-sm-6 liens_left my-auto">
+                    <a href="mentions-legales.html" class="btn btn-footer">Mentions légales</a>
+                </div>
+                <div class="col-xs-12 col-sm-6 liens_right">
+                    <div>ACCES IMMOBILIER © 2025</div>
                 </div>
             </div>
         </div>
     </footer>
 
-    <script src="../modele/js/jquery-3.2.1.minb1fb.js?1574429566"></script>
-    <script src="../modele/js/bootstrap.minb1fb.js?1574429566"></script>
-    <script src="../modele/js/mainf1ab.js?1716457065"></script>
+    <script src="../modele/js/jquery-3.2.1.minb1fb.js?1574429566" type="text/javascript"></script>
+    <script src="../modele/js/popper.minc75d.js?1646733235" type="text/javascript"></script>
+    <script src="../modele/js/bootstrap.minb1fb.js?1574429566" type="text/javascript"></script>
+    <script src="../js/bootstrap-select/bootstrap-select.min7023.js?1646733142" type="text/javascript"></script>
+    <script src="../../unpkg.com/aos%402.3.1/dist/aos.js"></script>
+    <script>AOS.init();</script>
+    <script src="../modele/js/sticky-headerc880.js?1733391971" type="text/javascript"></script>
+    <script src="../modele/js/mainf1ab.js?1716457065" type="text/javascript"></script>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const apiUrl = "https://apim.skysignage.com/WCF/connector/d12a2a90-f1f7-59b0-a8ca-247e2907debf/78ecd32d-d37c-5628-8ab1-70a2792afb18?subscription-key=3a826b2799bd491aae7814f41351a46a";
+        const container = document.getElementById('inject-listings-here');
+
+        // Fonction pour formater le prix
+        const formatPrice = (price) => {
+            if(!price) return 'Nous consulter';
+            return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(price);
+        };
+
+        fetch(apiUrl)
+        .then(response => {
+            if (!response.ok) { throw new Error('Erreur réseau'); }
+            return response.json();
+        })
+        .then(data => {
+            // Log pour voir les champs réels dans la console (F12)
+            console.log("Données reçues de l'API :", data); 
+
+            // Adapte ceci si tes données sont dans data.value ou data.biens
+            // Si l'API retourne directement un tableau, utilise 'data'
+            const listings = Array.isArray(data) ? data : (data.value || []);
+
+            if (listings.length === 0) {
+                container.innerHTML = '<p class="text-center">Aucun bien disponible pour le moment.</p>';
+                return;
+            }
+
+            let htmlContent = '';
+
+            listings.forEach((bien, index) => {
+                // --- CONFIGURATION DES CHAMPS API ---
+                // Change les valeurs ci-dessous en fonction de ce que tu vois dans la console F12
+                const idBien = bien.id || bien.Reference || index;
+                const titre = bien.titre || bien.Titre || 'Bien immobilier';
+                const typeBien = bien.type || bien.Type || 'Maison';
+                const ville = bien.ville || bien.Ville || '';
+                const cp = bien.code_postal || bien.CodePostal || '';
+                const prix = bien.prix || bien.Prix || 0;
+                const surface = bien.surface_habitable || bien.Surface || 0;
+                const terrain = bien.surface_terrain || bien.Terrain || 0;
+                const pieces = bien.pieces || bien.Pieces || 0;
+                const chambres = bien.chambres || bien.Chambres || 0;
+                const description = bien.description || bien.Description || '';
+                const photos = bien.photos || bien.Photos || []; // Doit être un tableau d'URLs
+                const reference = bien.reference || bien.Reference || idBien;
+                // -------------------------------------
+
+                // Gestion des photos pour le carousel
+                let imagesHtml = '';
+                if(photos && photos.length > 0) {
+                    photos.forEach((imgUrl, idx) => {
+                        const activeClass = idx === 0 ? 'active' : '';
+                        imagesHtml += `
+                            <div class="carousel-item ${activeClass}">
+                                <img class="d-block img-fluid" src="${imgUrl}" alt="${titre}" style="width:100%; height:300px; object-fit:cover;">
+                            </div>`;
+                    });
+                } else {
+                    // Image par défaut si pas de photos
+                    imagesHtml = `<div class="carousel-item active"><img class="d-block img-fluid" src="https://via.placeholder.com/450x300?text=Pas+de+photo" alt="Sans photo"></div>`;
+                }
+
+                // Génération du HTML pour une maison
+                htmlContent += `
+                <article id="art_${idBien}" class="item-listing" style="margin-bottom: 30px;">
+                    <a href="detail.html?ref=${idBien}" title="Plus de détails" class="item-link"></a>
+                    
+                    <div class="block_img">
+                        <div class="bandeaux">
+                            <div class="block_etiquette b_exclu">Nouveauté</div>
+                        </div>
+
+                        <div class="carousel_nbr_photos">${photos.length} Photos</div>
+                        
+                        <div id="carousel-${idBien}" class="carousel slide lazy" data-ride="carousel" data-interval="false">
+                            <div class="carousel-inner" role="listbox">
+                                ${imagesHtml}
+                            </div>
+                            <span class="carousel-control-prev" href="#carousel-${idBien}" role="button" data-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            </span>
+                            <span class="carousel-control-next" href="#carousel-${idBien}" role="button" data-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="block_info">
+                        <div class="effect-cms">
+                            <div class="card-fav-absolute"><i class="tea ion-ios-heart adfav"></i></div>
+
+                            <div class="header-item">
+                                <a href="detail.html?ref=${idBien}" title="Plus de détails">
+                                    <div class="spin1 info_type">Vente ${typeBien}</div>
+                                    <span class="spin2 info_titre">${titre}</span>
+                                    <div class="spin3 info_ville">
+                                        <i class="tea ion-ios-location-outline"></i>
+                                        ${ville} ${cp}
+                                    </div>
+                                </a>
+                            </div>
+                            
+                            <div class="box">
+                                <div class="line"><div class="triangle"></div></div>
+                            </div>
+                            
+                            <div class="spin4 info_prix">${formatPrice(prix)} <sup class="prixplus">*</sup>
+                                <div class="info_prix-hai">
+                                    * Honoraires charge vendeur
+                                </div>
+                            </div>
+
+                            <ul class="card_list hidden-sm-down">
+                                <li><span class="val">${pieces}</span> Pièces</li>
+                                <li><span class="val">${chambres}</span> Chambres</li>
+                                <li><span class="val">${surface}</span> m<sup>2</sup></li>
+                            </ul>
+
+                            <div class="infos-flex">
+                                <div class="col1">
+                                    <div class="description">
+                                        ${description.substring(0, 140)}...
+                                    </div>
+                                </div>
+                                <div class="col2">
+                                    <ul><li><div>Surface</div><div>${surface} m<sup>2</sup></div></li></ul>
+                                    <ul><li><div>Terrain</div><div>${terrain} m<sup>2</sup></div></li></ul>
+                                    <ul><li><div>Pièces</div><div>${pieces}</div></li></ul>
+                                    <ul><li><div>Chambres</div><div>${chambres}</div></li></ul>
+                                </div>
+                            </div>
+
+                            <div class="card_foot hidden-sm-down">
+                                <div class="d-flex justify-content-between">
+                                    <div class="spin5 info_numero align-text-bottom">Réf. ${reference}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>`;
+            });
+
+            // Injection
+            container.innerHTML = htmlContent;
+
+            // Relancer les composants Bootstrap (Select, Carousel, etc) si nécessaire
+            $('.carousel').carousel();
+            $('.selectpicker').selectpicker('refresh');
+
+        })
+        .catch(error => {
+            console.error('Erreur API:', error);
+            container.innerHTML = '<div class="alert alert-danger">Impossible de récupérer les annonces. Vérifiez la connexion ou l\'API.</div>';
+        });
+    });
+    </script>
 
 </body>
 </html>
