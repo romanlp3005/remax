@@ -1,0 +1,68 @@
+.has-danger .input-group-addon {
+/*  border: none;*/
+}
+
+.has-success .champs {
+  border-color: #5cb85c;
+  background-color: #eaf6ea;
+}
+
+.has-error .champs,
+.has-danger .champs {
+  border-color: #d9534f;
+  background-color: #fdf7f7;
+}
+
+.has-success .champs input,
+.has-success .champs select,
+.has-success .champs textarea,
+.has-success .champs .bootstrap-select button {
+  color: #5cb85c;
+  border-color: #5cb85c;
+  background-color: #eaf6ea;
+}
+
+.has-error .champs input,
+.has-danger .champs input,
+.has-error .champs select,
+.has-danger .champs select,
+.has-error .champs textarea,
+.has-danger .champs textarea,
+.has-error .champs textarea,
+.has-danger .champs textarea {
+  color: #d9534f;
+  border-color: #d9534f;
+  background-color: #fdf7f7;
+}
+
+.parsley-errors-list {
+  margin: 2px 0 3px;
+  padding: 0;
+  list-style-type: none;
+  font-size: 0.9em;
+  line-height: 0.9em;
+  opacity: 0;
+
+  transition: all .3s ease-in;
+  -o-transition: all .3s ease-in;
+  -moz-transition: all .3s ease-in;
+  -webkit-transition: all .3s ease-in;
+}
+
+.parsley-errors-list.filled {
+  opacity: 1;
+}
+
+/*
+.has-danger .input-group-addon {
+  color: #d9534f;
+  border-color: #d9534f;
+  background-color: #fdf7f7;
+}
+
+.has-success .input-group-addon {
+    color: #5cb85c;
+    border-color: #5cb85c;
+    background-color: #eaf6ea;
+}
+*/
