@@ -565,7 +565,6 @@
             <div class="article_content">
                 <article class="item-listing">
                     <a href="detail.html?id=" class="item-link lien-detail"></a>
-                    
                     <div class="block_img">
                         <div class="carousel slide">
                             <div class="carousel-inner">
@@ -575,7 +574,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="block_info">
                         <div class="effect-cms">
                             <div class="header-item">
@@ -605,17 +603,7 @@
         </div>
     </div>
 
-    <div id="resultats-dynamiques"></div>  	
-        <div class="listing_pagination container mt-2">
-                                    
-                        </div>
-     
-</div>
- 
-
-
-</div>
-
+    <div id="resultats-dynamiques"></div>
 
 
     <!-- ajax loading dialog -->
@@ -1214,83 +1202,69 @@ var map_enlever = "Enlever ";
 		<script src="../js/bootstrap-select/bootstrap-select.min7023.js?1646733142" type="text/javascript" id="bootstrap-select-js"></script>
 		<script src="../js/bootstrap-select/defaults-fr_FR.min3476.js?1574428958" type="text/javascript" id="bootstrap-select-i18n-js"></script>
 
-<!--a compacter-->
-<script>
-    $(document).ready(function() {
-        var my_cookie = Cookies.get($('.modal-check').attr('name'));
-        if (my_cookie && my_cookie == "true") {
-            $(this).prop('checked', my_cookie);
-        } else {
-            $('#myModal2').modal('show');
-        }
-        $(".modal-check").change(function() {
-            Cookies($(this).attr("name"), $(this).prop('checked'), {
-                path: '/',
-                expires: 1
-            });
-        });
-    });
-</script>
-<script src="../modele/js/sticky-headerc880.js?1733391971" type="text/javascript"></script>
-<script src="../modele/js/mainf1ab.js?1716457065" type="text/javascript"></script>
-    <script src="../js/premium/common5613.js?1730887060" type="text/javascript"></script>
-    <script src="../assets/js/appbc03.js?1638365383" type="text/javascript"></script>
- 
-
-
-        
-
-    <script src="../../kit.fontawesome.com/2ed742e839.html" crossorigin="anonymous"></script>
-
-
 <script>
 $(document).ready(function() {
-    // TON API EXACTE
-    const apiUrl = "https://apim.skysignage.com/WCF/connector/d12a2a90-f1f7-59b0-a8ca-247e2907debf/78ecd32d-d37c-5628-8ab1-70a2792afb18?subscription-key=3a826b2799bd491aae7814f41351a46a";
+    // Ton API qui fonctionne
+    const apiDirecte = "https://apim.skysignage.com/WCF/connector/d12a2a90-f1f7-59b0-a8ca-247e2907debf/78ecd32d-d37c-5628-8ab1-70a2792afb18?subscription-key=3a826b2799bd491aae7814f41351a46a";
+    
+    // Le passe-droit pour éviter "Erreur de connexion"
+    const urlFinale = "https://api.allorigins.win/raw?url=" + encodeURIComponent(apiDirecte);
 
-    $.getJSON(apiUrl, function(response) {
-        if (response.success && response.data) {
-            $('#loading-message').hide(); // On cache le chargement
+    $.getJSON(urlFinale, function(response) {
+        // Nettoyage de la réponse (parfois c'est direct, parfois dans .data)
+        let data = response.data || response;
 
-            $.each(response.data, function(index, annonceData) {
-                
-                // Fonction pour lire les données de ton API
+        if (data) {
+            $('#loading-message').hide(); 
+
+            $.each(data, function(index, annonceData) {
+                // Fonction de lecture sécurisée
                 function getVal(champ) { 
-                    let item = annonceData.find(x => x.std_name === champ);
-                    return item ? item.value : ""; 
+                    if (Array.isArray(annonceData)) {
+                        let item = annonceData.find(x => x.std_name === champ);
+                        return item ? item.value : "";
+                    }
+                    return annonceData[champ] || "";
                 }
 
-                // FILTRE : On affiche UNIQUEMENT les Ventes (category "0")
-                // Si ce n'est pas une vente, on passe au suivant
+                // Filtre VENTE uniquement
                 if (getVal("category") !== "0") return;
 
-                // On clone le moule
+                // Clonage du moule
                 let template = $('#template-annonce').children().clone();
                 
-                // On remplit les infos
+                // Remplissage
                 let id = getVal("id");
                 let photos = getVal("pictures");
-                let photoUrl = (photos && photos.length > 0) ? photos[0] : '../assets/images/sans-photo.jpg';
+                let photoUrl = '../assets/images/sans-photo.jpg';
+                
+                // Gestion des photos (tableau ou texte)
+                if (Array.isArray(photos) && photos.length > 0) photoUrl = photos[0];
+                else if (typeof photos === 'string' && photos.length > 5) photoUrl = photos;
 
                 template.find('.lien-detail').attr('href', 'detail.html?id=' + id);
                 template.find('.photo-principale').attr('src', photoUrl);
-                template.find('.info_type').text(getVal("type_name") || "Maison"); // Type de bien
+                template.find('.info_type').text(getVal("type_name") || "Maison");
                 template.find('.info_titre').text(getVal("title"));
                 template.find('.info_ville span').text(getVal("city"));
-                template.find('.info_prix').text(getVal("price_format"));
-                template.find('.info_pieces').text(getVal("rooms") || "-");
+                
+                let prix = getVal("price_format");
+                if (prix && !prix.includes('€')) prix += ' €';
+                template.find('.info_prix').text(prix);
+                
+                template.find('.info_pieces').text(getVal("rooms") || getVal("bedrooms") || "-");
                 template.find('.info_surface').text(getVal("area_size") || "-");
-                template.find('.info_desc').text(getVal("description").substring(0, 150) + "..."); // Description courte
+                
+                let desc = getVal("description");
+                if(desc) template.find('.info_desc').text(desc.substring(0, 140) + "...");
+                
                 template.find('.info_ref').text("Réf. " + getVal("reference"));
 
-                // On ajoute l'annonce remplie dans la page
                 $('#resultats-dynamiques').append(template);
             });
-        } else {
-             $('#loading-message').html("Aucune connexion aux annonces.");
         }
     }).fail(function() {
-        console.log("Erreur API - Vérifier si en ligne"); 
+        $('#loading-message').html('<p style="color:red">Erreur : Impossible de récupérer les annonces (Bloqué par sécurité ou API HS).</p>');
     });
 });
 </script>
