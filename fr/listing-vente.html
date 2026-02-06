@@ -1216,81 +1216,100 @@ var map_enlever = "Enlever ";
 
 <script>
 $(document).ready(function() {
-    console.log("Démarrage du script...");
-    const apiUrl = "https://apim.skysignage.com/WCF/connector/d12a2a90-f1f7-59b0-a8ca-247e2907debf/78ecd32d-d37c-5628-8ab1-70a2792afb18?subscription-key=3a826b2799bd491aae7814f41351a46a";
+    console.log("Démarrage du script avec Proxy...");
+    
+    // 1. L'adresse de ton API
+    const targetUrl = "https://apim.skysignage.com/WCF/connector/d12a2a90-f1f7-59b0-a8ca-247e2907debf/78ecd32d-d37c-5628-8ab1-70a2792afb18?subscription-key=3a826b2799bd491aae7814f41351a46a";
+    
+    // 2. On utilise un proxy public pour contourner la sécurité CORS
+    const proxyUrl = "https://api.allorigins.win/raw?url=" + encodeURIComponent(targetUrl);
 
-    $.getJSON(apiUrl, function(response) {
-        console.log("Réponse reçue de l'API :", response); // Pour voir les données dans la console
+    $.getJSON(proxyUrl, function(response) {
+        console.log("Réponse reçue !", response);
 
-        // On détermine où sont les données (parfois c'est direct, parfois dans .data, parfois dans .d)
+        // On cherche où sont rangées les annonces dans la réponse
         let listeAnnonces = [];
-        if (Array.isArray(response)) {
-            listeAnnonces = response;
-        } else if (response.data && Array.isArray(response.data)) {
+        if (response.data && Array.isArray(response.data)) {
             listeAnnonces = response.data;
-        } else if (response.d && Array.isArray(response.d)) {
-            listeAnnonces = response.d;
+        } else if (Array.isArray(response)) {
+            listeAnnonces = response;
         }
 
         if (listeAnnonces.length > 0) {
-            $('#loading-message').hide();
+            $('#loading-message').hide(); // On cache le chargement
             
             $.each(listeAnnonces, function(index, annonceData) {
-                // Fonction sécurisée pour trouver une valeur
+                
+                // Fonction pour lire une valeur (ex: le prix, le titre...)
                 function getVal(champ) { 
                     if (!annonceData) return "";
-                    // Si l'objet est simple (clé:valeur)
-                    if (annonceData[champ]) return annonceData[champ];
-                    // Si l'objet est complexe (std_name: "category", value: "0") - Format SkySignage classique
+                    // Si c'est le format complexe SkySignage (tableau d'objets)
                     if (Array.isArray(annonceData)) {
                         let item = annonceData.find(x => x.std_name === champ);
                         return item ? item.value : "";
                     }
-                    return "";
+                    // Si c'est un format simple
+                    return annonceData[champ] ? annonceData[champ] : "";
                 }
 
-                // --- TESTER SANS FILTRE D'ABORD ---
-                // Si rien ne s'affiche, commente la ligne ci-dessous avec //
+                // --- FILTRE : ON NE GARDE QUE LES VENTES ---
+                // "0" est souvent le code pour Vente. Si ça ne marche pas, on essaiera sans ce "if"
                 if (getVal("category") !== "0") return; 
 
-                // Clonage
+                // Clonage du moule
                 let template = $('#template-annonce').children().clone();
                 
-                // Données
+                // --- REMPLISSAGE DES DONNEES ---
+                
+                // 1. ID et Lien
                 let id = getVal("id");
-                let photos = getVal("pictures");
-                // Vérification si photos est une chaine ou un tableau
-                let photoUrl = '../assets/images/sans-photo.jpg';
-                if (Array.isArray(photos) && photos.length > 0) photoUrl = photos[0];
-                else if (typeof photos === 'string' && photos.length > 5) photoUrl = photos;
-
                 template.find('.lien-detail').attr('href', 'detail.html?id=' + id);
+                
+                // 2. Photos
+                let photos = getVal("pictures");
+                let photoUrl = '../assets/images/sans-photo.jpg';
+                // L'API renvoie parfois les photos sous forme de tableau, parfois sous forme de chaine
+                if (Array.isArray(photos) && photos.length > 0) {
+                    photoUrl = photos[0]; 
+                } else if (typeof photos === 'string' && photos.length > 5) {
+                    photoUrl = photos;
+                }
                 template.find('.photo-principale').attr('src', photoUrl);
-                template.find('.info_type').text(getVal("type_name") || "Bien");
-                template.find('.info_titre').text(getVal("title") || "Titre non disponible");
-                template.find('.info_ville span').text(getVal("city"));
-                template.find('.info_prix').text(getVal("price_format") || getVal("price") + " €");
+
+                // 3. Textes
+                template.find('.info_type').text(getVal("type_name") || "Maison");
+                template.find('.info_titre').text(getVal("title") || "Bien immobilier");
+                template.find('.info_ville span').text(getVal("city") || "");
                 
-                let pieces = getVal("rooms") || getVal("bedrooms");
-                let surface = getVal("area_size");
+                // 4. Prix (On ajoute le symbole € si manquant)
+                let prix = getVal("price_format");
+                if (!prix) prix = getVal("price") + " €";
+                template.find('.info_prix').text(prix);
                 
-                template.find('.info_pieces').text(pieces ? pieces : "-");
-                template.find('.info_surface').text(surface ? surface : "-");
+                // 5. Détails
+                template.find('.info_pieces').text(getVal("rooms") || getVal("bedrooms") || "-");
+                template.find('.info_surface').text(getVal("area_size") || "-");
                 
                 let desc = getVal("description");
-                template.find('.info_desc').text(desc ? desc.substring(0, 100) + "..." : "");
+                if(desc) template.find('.info_desc').text(desc.substring(0, 120) + "...");
                 
                 template.find('.info_ref').text("Réf. " + getVal("reference"));
 
+                // Hop, on l'affiche dans la page !
                 $('#resultats-dynamiques').append(template);
             });
+
+            // Si aucune annonce trouvée après filtrage
+            if ($('#resultats-dynamiques').children().length === 0) {
+                $('#loading-message').show().html("Aucune annonce de vente trouvée (vérifier le filtre catégorie).");
+            }
+
         } else {
-             $('#loading-message').html("L'API a répondu mais la liste est vide ou format inconnu.");
-             console.log("Structure reçue non reconnue.");
+             $('#loading-message').html("Aucune annonce reçue de l'API.");
         }
     }).fail(function(jqXHR, textStatus, errorThrown) {
-        $('#loading-message').html('<p style="color:red">Erreur de connexion API.</p>');
-        console.error("Erreur API : " + textStatus, errorThrown);
+        console.error("Erreur détaillée:", textStatus, errorThrown);
+        $('#loading-message').html('<p style="color:red">Erreur technique : Le serveur d\'annonces ne répond pas via le proxy.<br>Essayez de recharger la page.</p>');
     });
 });
 </script>
