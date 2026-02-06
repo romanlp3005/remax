@@ -1214,83 +1214,83 @@ var map_enlever = "Enlever ";
 		<script src="../js/bootstrap-select/bootstrap-select.min7023.js?1646733142" type="text/javascript" id="bootstrap-select-js"></script>
 		<script src="../js/bootstrap-select/defaults-fr_FR.min3476.js?1574428958" type="text/javascript" id="bootstrap-select-i18n-js"></script>
 
-<!--a compacter-->
-<script>
-    $(document).ready(function() {
-        var my_cookie = Cookies.get($('.modal-check').attr('name'));
-        if (my_cookie && my_cookie == "true") {
-            $(this).prop('checked', my_cookie);
-        } else {
-            $('#myModal2').modal('show');
-        }
-        $(".modal-check").change(function() {
-            Cookies($(this).attr("name"), $(this).prop('checked'), {
-                path: '/',
-                expires: 1
-            });
-        });
-    });
-</script>
-<script src="../modele/js/sticky-headerc880.js?1733391971" type="text/javascript"></script>
-<script src="../modele/js/mainf1ab.js?1716457065" type="text/javascript"></script>
-    <script src="../js/premium/common5613.js?1730887060" type="text/javascript"></script>
-    <script src="../assets/js/appbc03.js?1638365383" type="text/javascript"></script>
- 
-
-
-        
-
-    <script src="../../kit.fontawesome.com/2ed742e839.html" crossorigin="anonymous"></script>
-
-
 <script>
 $(document).ready(function() {
-    // TON API EXACTE
+    console.log("Démarrage du script...");
     const apiUrl = "https://apim.skysignage.com/WCF/connector/d12a2a90-f1f7-59b0-a8ca-247e2907debf/78ecd32d-d37c-5628-8ab1-70a2792afb18?subscription-key=3a826b2799bd491aae7814f41351a46a";
 
     $.getJSON(apiUrl, function(response) {
-        if (response.success && response.data) {
-            $('#loading-message').hide(); // On cache le chargement
+        console.log("Réponse reçue de l'API :", response); // Pour voir les données dans la console
 
-            $.each(response.data, function(index, annonceData) {
-                
-                // Fonction pour lire les données de ton API
+        // On détermine où sont les données (parfois c'est direct, parfois dans .data, parfois dans .d)
+        let listeAnnonces = [];
+        if (Array.isArray(response)) {
+            listeAnnonces = response;
+        } else if (response.data && Array.isArray(response.data)) {
+            listeAnnonces = response.data;
+        } else if (response.d && Array.isArray(response.d)) {
+            listeAnnonces = response.d;
+        }
+
+        if (listeAnnonces.length > 0) {
+            $('#loading-message').hide();
+            
+            $.each(listeAnnonces, function(index, annonceData) {
+                // Fonction sécurisée pour trouver une valeur
                 function getVal(champ) { 
-                    let item = annonceData.find(x => x.std_name === champ);
-                    return item ? item.value : ""; 
+                    if (!annonceData) return "";
+                    // Si l'objet est simple (clé:valeur)
+                    if (annonceData[champ]) return annonceData[champ];
+                    // Si l'objet est complexe (std_name: "category", value: "0") - Format SkySignage classique
+                    if (Array.isArray(annonceData)) {
+                        let item = annonceData.find(x => x.std_name === champ);
+                        return item ? item.value : "";
+                    }
+                    return "";
                 }
 
-                // FILTRE : On affiche UNIQUEMENT les Ventes (category "0")
-                // Si ce n'est pas une vente, on passe au suivant
-                if (getVal("category") !== "0") return;
+                // --- TESTER SANS FILTRE D'ABORD ---
+                // Si rien ne s'affiche, commente la ligne ci-dessous avec //
+                if (getVal("category") !== "0") return; 
 
-                // On clone le moule
+                // Clonage
                 let template = $('#template-annonce').children().clone();
                 
-                // On remplit les infos
+                // Données
                 let id = getVal("id");
                 let photos = getVal("pictures");
-                let photoUrl = (photos && photos.length > 0) ? photos[0] : '../assets/images/sans-photo.jpg';
+                // Vérification si photos est une chaine ou un tableau
+                let photoUrl = '../assets/images/sans-photo.jpg';
+                if (Array.isArray(photos) && photos.length > 0) photoUrl = photos[0];
+                else if (typeof photos === 'string' && photos.length > 5) photoUrl = photos;
 
                 template.find('.lien-detail').attr('href', 'detail.html?id=' + id);
                 template.find('.photo-principale').attr('src', photoUrl);
-                template.find('.info_type').text(getVal("type_name") || "Maison"); // Type de bien
-                template.find('.info_titre').text(getVal("title"));
+                template.find('.info_type').text(getVal("type_name") || "Bien");
+                template.find('.info_titre').text(getVal("title") || "Titre non disponible");
                 template.find('.info_ville span').text(getVal("city"));
-                template.find('.info_prix').text(getVal("price_format"));
-                template.find('.info_pieces').text(getVal("rooms") || "-");
-                template.find('.info_surface').text(getVal("area_size") || "-");
-                template.find('.info_desc').text(getVal("description").substring(0, 150) + "..."); // Description courte
+                template.find('.info_prix').text(getVal("price_format") || getVal("price") + " €");
+                
+                let pieces = getVal("rooms") || getVal("bedrooms");
+                let surface = getVal("area_size");
+                
+                template.find('.info_pieces').text(pieces ? pieces : "-");
+                template.find('.info_surface').text(surface ? surface : "-");
+                
+                let desc = getVal("description");
+                template.find('.info_desc').text(desc ? desc.substring(0, 100) + "..." : "");
+                
                 template.find('.info_ref').text("Réf. " + getVal("reference"));
 
-                // On ajoute l'annonce remplie dans la page
                 $('#resultats-dynamiques').append(template);
             });
         } else {
-             $('#loading-message').html("Aucune connexion aux annonces.");
+             $('#loading-message').html("L'API a répondu mais la liste est vide ou format inconnu.");
+             console.log("Structure reçue non reconnue.");
         }
-    }).fail(function() {
-        console.log("Erreur API - Vérifier si en ligne"); 
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+        $('#loading-message').html('<p style="color:red">Erreur de connexion API.</p>');
+        console.error("Erreur API : " + textStatus, errorThrown);
     });
 });
 </script>
