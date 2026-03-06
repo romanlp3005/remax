@@ -756,7 +756,7 @@
                             <span class="intention_appel_txt">Voir le téléphone</span>
                         </div>
                     </a>
-                    						  <p><a style="color:#ffffff" href="mailto:contact@acces-immobilier.com">contact@acces-immobilier.com</a></p>
+                    						  <p><a style="color:#ffffff" href="/cdn-cgi/l/email-protection#43202c2d372220370322202026306e2a2e2e2c212a2f2a26316d202c2e"><span class="__cf_email__" data-cfemail="e784888993868493a78684848294ca8e8a8a88858e8b8e8295c984888a">[email&#160;protected]</span></a></p>
                 </div>
 
                 <div class="tel col-xs-12 col-md-4">
@@ -905,7 +905,7 @@
 	
 	</style>
 	
- <script src="../cdn.jsdelivr.net/npm/js-cookie%403.0.0-rc.1/dist/js.cookie.min.js"></script>
+ <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="../cdn.jsdelivr.net/npm/js-cookie%403.0.0-rc.1/dist/js.cookie.min.js"></script>
 	
 	<style>
 	.cc-btn {
@@ -1323,7 +1323,7 @@ var url_favoris = baseUrl + '/'+'fr/action-favoris.'+'html';
 <script>
 $(document).ready(function() {
     // ✅ On passe par proxy.php (à la racine du site) pour éviter le blocage CORS
-    const apiUrl = "proxy.php";
+    const apiUrl = "https://corsproxy.io/?url=https://apim.skysignage.com/WCF/connector/d12a2a90-f1f7-59b0-a8ca-247e2907debf/78ecd32d-d37c-5628-8ab1-70a2792afb18?subscription-key=3a826b2799bd491aae7814f41351a46a";
 
     function getVal(tableau, nomChamp) {
         if (!Array.isArray(tableau)) return null;
@@ -1398,16 +1398,4 @@ $(document).ready(function() {
                 let lienHref = (categorie === "0") ? "fr/listing-vente.html" : "fr/listing-location.html";
                 nouvelleAnnonce.find('.item-link').attr('href', lienHref);
 
-                let colonne = $('<div class="col-md-4 col-sm-6 mb-4"></div>').append(nouvelleAnnonce);
-                $(containerId).append(colonne);
-            });
-        },
-        error: function(xhr, status, error) {
-            console.error("Erreur chargement annonces:", status, error);
-        }
-    });
-});
-</script>
-
-
-</body>
+                let colonne = $('<div class="col-md-4 col-sm-6 mb-4"></div>')
