@@ -177,7 +177,7 @@
                 <div class="address col-xs-12 col-md-4">
                     <p>27 avenue Pasteur 11800 Trèbes</p>
                     <a href="tel:04 68 78 53 20" style="color:white;">04 68 78 53 20</a>
-                    <p><a style="color:#ffffff" href="mailto:contact@acces-immobilier.com">contact@acces-immobilier.com</a></p>
+                    <p><a style="color:#ffffff" href="/cdn-cgi/l/email-protection#d1b2bebfa5b0b2a591b0b2b2b4a2fcb8bcbcbeb3b8bdb8b4a3ffb2bebc"><span class="__cf_email__" data-cfemail="0d6e6263796c6e794d6c6e6e687e20646060626f646164687f236e6260">[email&#160;protected]</span></a></p>
                 </div>
                  <div class="tel col-xs-12 col-md-4">
                     <div class="social">
@@ -205,7 +205,7 @@
         </div>
     </footer>
 
-    <script src="../modele/js/jquery-3.2.1.minb1fb.js?1574429566" type="text/javascript"></script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="../modele/js/jquery-3.2.1.minb1fb.js?1574429566" type="text/javascript"></script>
     <script src="../modele/js/popper.minc75d.js?1646733235" type="text/javascript"></script>
     <script src="../modele/js/bootstrap.minb1fb.js?1574429566" type="text/javascript"></script>
     <script src="../js/bootstrap-select/bootstrap-select.min7023.js?1646733142" type="text/javascript"></script>
@@ -216,7 +216,7 @@
 
     <script>
     document.addEventListener("DOMContentLoaded", function() {
-        const apiUrl = "../proxy.php";
+        const apiUrl = "https://corsproxy.io/?url=https://apim.skysignage.com/WCF/connector/d12a2a90-f1f7-59b0-a8ca-247e2907debf/78ecd32d-d37c-5628-8ab1-70a2792afb18?subscription-key=3a826b2799bd491aae7814f41351a46a";
         const container = document.getElementById('inject-listings-here');
 
         // 1. Fonction pour extraire la valeur depuis la structure complexe de ton API
@@ -377,15 +377,4 @@
             try {
                 $('.carousel').carousel();
                 $('.selectpicker').selectpicker('refresh');
-            } catch(e) { console.log('Bootstrap re-init skipped'); }
-
-        })
-        .catch(error => {
-            console.error('Erreur API:', error);
-            container.innerHTML = '<div class="alert alert-danger">Problème de connexion avec les annonces.</div>';
-        });
-    });
-    </script>
-
-</body>
-</html>
+            } catch(e) { console.log('Bootstrap re-init skipped
