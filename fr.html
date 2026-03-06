@@ -1322,72 +1322,89 @@ var url_favoris = baseUrl + '/'+'fr/action-favoris.'+'html';
 
 <script>
 $(document).ready(function() {
-    // URL de ton API SkySignage
-    const apiUrl = "https://apim.skysignage.com/WCF/connector/d12a2a90-f1f7-59b0-a8ca-247e2907debf/78ecd32d-d37c-5628-8ab1-70a2792afb18?subscription-key=3a826b2799bd491aae7814f41351a46a";
+    // ✅ On passe par proxy.php (à la racine du site) pour éviter le blocage CORS
+    const apiUrl = "proxy.php";
 
-    // Fonction pour récupérer une valeur précise dans le bazar de l'API
     function getVal(tableau, nomChamp) {
+        if (!Array.isArray(tableau)) return null;
         let item = tableau.find(x => x.std_name === nomChamp);
-        return item ? item.value : "";
+        return item ? item.value : null;
     }
 
-    // On lance la récupération des données
-    $.getJSON(apiUrl, function(response) {
-        if (response.success && response.data) {
-            
-            // On vide les zones au cas où
+    $.ajax({
+        url: apiUrl,
+        method: 'GET',
+        dataType: 'json',
+        success: function(response) {
+            if (!response.success || !response.data) return;
+
             $('#resultats-vente').empty();
             $('#resultats-location').empty();
 
-            // On boucle sur chaque annonce
-            $.each(response.data, function(index, annonceData) {
-                
-                // 1. Récupération des infos importantes
-                let categorie = getVal(annonceData, "category"); // "0" = Vente, "1" = Location
-                let prix = getVal(annonceData, "price_format");
-                let ville = getVal(annonceData, "city");
-                let titre = getVal(annonceData, "title"); // Sert de "Type"
-                let photos = getVal(annonceData, "pictures");
-                let id = getVal(annonceData, "id");
-                
-                // Image par défaut si pas de photo
-                let photoUrl = (photos && photos.length > 0) ? photos[0] : 'assets/images/sans-photo.jpg';
+            // Limite à 6 biens par section sur la page d'accueil
+            let countVente = 0;
+            let countLocation = 0;
+            const MAX = 6;
 
-                // 2. Choix du bon modèle (Vente ou Location)
-                let templateId = "";
+            $.each(response.data, function(index, annonceData) {
+                let categorie = getVal(annonceData, "category"); // "0" = Vente, "1" = Location
+                let prix      = getVal(annonceData, "price_format") || "Nous consulter";
+                let ville     = getVal(annonceData, "city") || "";
+                let titre     = getVal(annonceData, "title") || "Bien immobilier";
+                let photos    = getVal(annonceData, "pictures");
+                let id        = getVal(annonceData, "id");
+                let surface   = getVal(annonceData, "area_size_format") || "";
+                let chambres  = getVal(annonceData, "bedrooms") || "";
+                let isExclu   = getVal(annonceData, "exclusive") === true;
+
+                // ✅ photos est un Array — on prend le 1er élément
+                let photoUrl = (Array.isArray(photos) && photos.length > 0)
+                    ? photos[0]
+                    : 'assets/images/annonces_vente6b95.jpg';
+
+                let templateId  = "";
                 let containerId = "";
 
                 if (categorie === "0") {
-                    templateId = "#template-vente";
+                    if (countVente >= MAX) return;
+                    templateId  = "#template-vente";
                     containerId = "#resultats-vente";
+                    countVente++;
                 } else if (categorie === "1") {
-                    templateId = "#template-location";
+                    if (countLocation >= MAX) return;
+                    templateId  = "#template-location";
                     containerId = "#resultats-location";
+                    countLocation++;
                 } else {
-                    return; // On ignore si ce n'est ni vente ni location
+                    return;
                 }
 
-                // 3. Création de la nouvelle annonce (Clonage)
                 let nouvelleAnnonce = $(templateId).children().clone();
 
-                // 4. Remplissage des données
-                nouvelleAnnonce.find('.photo-principale').attr('src', photoUrl);
+                nouvelleAnnonce.find('.photo-principale').attr('src', photoUrl).attr('alt', titre);
                 nouvelleAnnonce.find('.info_prix').html(prix);
                 nouvelleAnnonce.find('.info_ville').text(ville);
-                nouvelleAnnonce.find('.info_type').text(titre.substring(0, 25) + '...'); // On coupe si le titre est trop long
-                
-                // Lien vers la fiche détail (On utilise l'ID pour le moment)
-                // Comme tu n'as plus les anciennes pages statiques, on pointera vers une page générique plus tard
-                nouvelleAnnonce.find('.item-link').attr('href', 'detail.html?id=' + id);
 
-                // 5. Affichage sur la page
-                // On met une classe col-md-4 pour avoir 3 annonces par ligne
+                // Titre court + surface si dispo
+                let titreAffiche = titre.length > 28 ? titre.substring(0, 28) + '…' : titre;
+                nouvelleAnnonce.find('.info_type').text(titreAffiche);
+
+                // Badge exclusivité
+                if (isExclu) {
+                    nouvelleAnnonce.find('.block_img').prepend('<div class="block_etiquette b_exclu" style="position:absolute;z-index:2;top:10px;left:10px;background:#c00;color:#fff;padding:3px 8px;font-size:11px;border-radius:3px;">Exclusivité</div>');
+                }
+
+                // Lien vers listing (pas encore de page détail dynamique)
+                let lienHref = (categorie === "0") ? "fr/listing-vente.html" : "fr/listing-location.html";
+                nouvelleAnnonce.find('.item-link').attr('href', lienHref);
+
                 let colonne = $('<div class="col-md-4 col-sm-6 mb-4"></div>').append(nouvelleAnnonce);
                 $(containerId).append(colonne);
             });
+        },
+        error: function(xhr, status, error) {
+            console.error("Erreur chargement annonces:", status, error);
         }
-    }).fail(function() {
-        console.log("Erreur lors du chargement des annonces.");
     });
 });
 </script>
